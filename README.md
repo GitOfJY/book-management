@@ -1,7 +1,7 @@
 ## 📘 Book Management API
 
 ### 프로젝트 개요
-도서 관리하는 Spring Boot 기반 RESTful API입니다.
+도서 관리하는 Spring Boot 기반 RESTful API입니다.  
 본 프로젝트는 Spring Boot + JPA 기반의 CRUD API 구현 및 Swagger 기반 API 문서화를 목표로 합니다.
 <br>
 <br>
