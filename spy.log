@@ -1,0 +1,16 @@
+1762829641937|0|statement|connection 109|url jdbc:h2:mem:test|     drop table if exists book cascade |     drop table if exists book cascade 
+1762829641937|0|statement|connection 109|url jdbc:h2:mem:test|     drop table if exists book_category cascade |     drop table if exists book_category cascade 
+1762829641937|0|statement|connection 109|url jdbc:h2:mem:test|     drop table if exists category cascade |     drop table if exists category cascade 
+1762829641937|0|statement|connection 109|url jdbc:h2:mem:test|     drop table if exists rental cascade |     drop table if exists rental cascade 
+1762829641937|0|statement|connection 109|url jdbc:h2:mem:test|     drop sequence if exists book_category_seq|     drop sequence if exists book_category_seq
+1762829641938|0|statement|connection 109|url jdbc:h2:mem:test|     drop sequence if exists book_seq|     drop sequence if exists book_seq
+1762829641938|0|statement|connection 109|url jdbc:h2:mem:test|     drop sequence if exists category_seq|     drop sequence if exists category_seq
+1762829641938|0|statement|connection 109|url jdbc:h2:mem:test|     drop sequence if exists rental_seq|     drop sequence if exists rental_seq
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop table if exists book cascade |     drop table if exists book cascade 
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop table if exists book_category cascade |     drop table if exists book_category cascade 
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop table if exists category cascade |     drop table if exists category cascade 
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop table if exists rental cascade |     drop table if exists rental cascade 
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop sequence if exists book_category_seq|     drop sequence if exists book_category_seq
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop sequence if exists book_seq|     drop sequence if exists book_seq
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop sequence if exists category_seq|     drop sequence if exists category_seq
+1762829641940|0|statement|connection 110|url jdbc:h2:mem:test|     drop sequence if exists rental_seq|     drop sequence if exists rental_seq

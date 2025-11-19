@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: jdbc:h2:tcp://localhost/~/bookmanagement
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+springdoc:
+  api-docs:
+    version: OPENAPI_3_0
+    enabled: true
+  swagger-ui:
+    enabled: true
+  override-with-generic-response: false
+
+logging:
+  level:
+    com.p6spy.engine.spy: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE

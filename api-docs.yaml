@@ -1,0 +1,816 @@
+openapi: 3.0.1
+info:
+  title: Book Management API
+  description: 도서 관리 API 문서
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+security:
+- jwtAuth: []
+paths:
+  /api/rentals/{rentalId}/suspend:
+    put:
+      tags:
+      - rental-controller
+      summary: 대여 중단 API
+      description: 훼손/분실 등의 사유로 대여를 중단 처리합니다.
+      operationId: suspend
+      parameters:
+      - name: rentalId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: 대여 중단 완료
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                RENTAL_NOT_FOUND:
+                  summary: RENTAL_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /suspend
+                    code: RENTAL_NOT_FOUND
+                    message: "대여 정보를 찾을 수 없습니다. (id={id})"
+                    status: 404
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                ALREADY_RETURNED_OR_UNAVAILABLE:
+                  summary: ALREADY_RETURNED_OR_UNAVAILABLE
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /suspend
+                    code: ALREADY_RETURNED_OR_UNAVAILABLE
+                    message: 이미 반납되었거나 대여 중단된 도서입니다.
+                    status: 400
+  /api/rentals/{rentalId}/return:
+    put:
+      tags:
+      - rental-controller
+      summary: 도서 반납 API
+      description: 대여건을 반납 처리합니다.
+      operationId: returnBook
+      parameters:
+      - name: rentalId
+        in: path
+        description: 대여 ID
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: 반납 완료
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                RENTAL_NOT_FOUND:
+                  summary: RENTAL_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /returnBook
+                    code: RENTAL_NOT_FOUND
+                    message: "대여 정보를 찾을 수 없습니다. (id={id})"
+                    status: 404
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                ALREADY_RETURNED_OR_UNAVAILABLE:
+                  summary: ALREADY_RETURNED_OR_UNAVAILABLE
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /returnBook
+                    code: ALREADY_RETURNED_OR_UNAVAILABLE
+                    message: 이미 반납되었거나 대여 중단된 도서입니다.
+                    status: 400
+  /api/books/{id}/categories:
+    put:
+      tags:
+      - book-controller
+      summary: 도서 카테고리 변경 API
+      description: 기존 도서의 카테고리를 변경합니다.
+      operationId: changeCategories
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateCategoriesRequest"
+        required: true
+      responses:
+        "204":
+          description: 변경 성공
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_NOT_FOUND:
+                  summary: BOOK_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /changeCategories
+                    code: BOOK_NOT_FOUND
+                    message: "도서를 찾을 수 없습니다. (id={id})"
+                    status: 404
+                CATEGORY_NOT_FOUND:
+                  summary: CATEGORY_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /changeCategories
+                    code: CATEGORY_NOT_FOUND
+                    message: "카테고리를 찾을 수 없습니다. (id={id})"
+                    status: 404
+  /api/books/{bookId}/status:
+    put:
+      tags:
+      - book-controller
+      summary: 도서 상태 변경 API
+      description: 기존 도서의 상태를 변경합니다.
+      operationId: changeStatus
+      parameters:
+      - name: bookId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ChangeBookStatusRequest"
+        required: true
+      responses:
+        "204":
+          description: 변경 성공
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_NOT_FOUND:
+                  summary: BOOK_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /changeStatus
+                    code: BOOK_NOT_FOUND
+                    message: "도서를 찾을 수 없습니다. (id={id})"
+                    status: 404
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_STATUS_NULL:
+                  summary: BOOK_STATUS_NULL
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /changeStatus
+                    code: BOOK_STATUS_NULL
+                    message: 도서 상태는 null로 변경할 수 없습니다.
+                    status: 400
+  /api/rentals:
+    get:
+      tags:
+      - rental-controller
+      summary: 전체 대여 내역 조회
+      description: 전체 대여 내역 목록을 조회합니다.
+      operationId: findAll
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RentResponse"
+    post:
+      tags:
+      - rental-controller
+      summary: 도서 대여 API
+      description: bookId와 이름으로 대여를 생성합니다.
+      operationId: rent
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RentRequest"
+        required: true
+      responses:
+        "200":
+          description: 대여 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RentResponse"
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_NOT_FOUND:
+                  summary: BOOK_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /rent
+                    code: BOOK_NOT_FOUND
+                    message: "도서를 찾을 수 없습니다. (id={id})"
+                    status: 404
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_NOT_AVAILABLE:
+                  summary: BOOK_NOT_AVAILABLE
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /rent
+                    code: BOOK_NOT_AVAILABLE
+                    message: 도서가 대여 가능한 상태가 아닙니다.
+                    status: 400
+                OUT_OF_STOCK:
+                  summary: OUT_OF_STOCK
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /rent
+                    code: OUT_OF_STOCK
+                    message: "해당 도서는 재고가 부족합니다. (id={id})"
+                    status: 400
+  /api/categories:
+    get:
+      tags:
+      - category-controller
+      summary: 전체 카테고리 조회 API
+      description: 전체 카테고리를 조회합니다.
+      operationId: findCategories
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+    post:
+      tags:
+      - category-controller
+      summary: 신규 카테고리 추가
+      description: 새 카테고리를 생성합니다.
+      operationId: createCategory
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCategoryRequest"
+        required: true
+      responses:
+        "200":
+          description: 생성 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CategoryResponse"
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                REQUIRED_FIELD:
+                  summary: REQUIRED_FIELD
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /createCategory
+                    code: REQUIRED_FIELD
+                    message: "{field}은(는) 필수입니다."
+                    status: 400
+                INVALID_ARGUMENT:
+                  summary: INVALID_ARGUMENT
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /createCategory
+                    code: INVALID_ARGUMENT
+                    message: 잘못된 요청입니다.
+                    status: 400
+        "409":
+          description: 비즈니스 충돌
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                CATEGORY_ALREADY_EXISTS:
+                  summary: CATEGORY_ALREADY_EXISTS
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /createCategory
+                    code: CATEGORY_ALREADY_EXISTS
+                    message: "이미 존재하는 카테고리입니다: {name}"
+                    status: 409
+  /api/books:
+    get:
+      tags:
+      - book-controller
+      summary: 전체 도서 조회 API
+      description: 전체 도서 목록을 조회합니다.
+      operationId: findBooks
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+    post:
+      tags:
+      - book-controller
+      summary: 신규 도서 등록 API
+      description: 신규 도서를 등록합니다. (카테고리 필수)
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBookRequest"
+        required: true
+      responses:
+        "200":
+          description: 등록 성공
+          content:
+            '*/*':
+              schema:
+                type: integer
+                format: int64
+        "400":
+          description: 잘못된 요청
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                REQUIRED_FIELD:
+                  summary: REQUIRED_FIELD
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /create
+                    code: REQUIRED_FIELD
+                    message: "{field}은(는) 필수입니다."
+                    status: 400
+                CATEGORY_REQUIRED:
+                  summary: CATEGORY_REQUIRED
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /create
+                    code: CATEGORY_REQUIRED
+                    message: 신규 도서는 최소 한 개 이상의 카테고리가 필요합니다.
+                    status: 400
+                INVALID_STOCK_QUANTITY:
+                  summary: INVALID_STOCK_QUANTITY
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /create
+                    code: INVALID_STOCK_QUANTITY
+                    message: 재고 수량은 음수가 될 수 없습니다.
+                    status: 400
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                CATEGORY_NOT_FOUND:
+                  summary: CATEGORY_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /create
+                    code: CATEGORY_NOT_FOUND
+                    message: "카테고리를 찾을 수 없습니다. (id={id})"
+                    status: 404
+  /api/books/search:
+    get:
+      tags:
+      - book-controller
+      summary: 저자 또는 제목별 도서 검색 API
+      description: 저자 또는 제목으로 도서를 검색합니다.
+      operationId: searchByAuthorAndTitle
+      parameters:
+      - name: author
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: title
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+  /api/books/search-by-category:
+    get:
+      tags:
+      - book-controller
+      summary: 카테고리별 도서 검색 API
+      description: 카테고리ID 또는 카테고리명으로 도서를 검색합니다.
+      operationId: searchByCategory
+      parameters:
+      - name: categoryId
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int64
+      - name: categoryName
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: integer
+          format: int32
+          default: 10
+      responses:
+        "200":
+          description: 조회 성공
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BookResponse"
+  /api/categories/{categoryId}:
+    delete:
+      tags:
+      - category-controller
+      summary: 카테고리 삭제 API
+      description: 카테고리를 삭제합니다.
+      operationId: delete
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: 삭제 성공
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                CATEGORY_NOT_FOUND:
+                  summary: CATEGORY_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /delete
+                    code: CATEGORY_NOT_FOUND
+                    message: "카테고리를 찾을 수 없습니다. (id={id})"
+                    status: 404
+  /api/books/{bookId}:
+    delete:
+      tags:
+      - book-controller
+      summary: 도서 삭제 API
+      description: 도서를 삭제합니다.
+      operationId: delete_1
+      parameters:
+      - name: bookId
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+      responses:
+        "204":
+          description: 삭제 성공
+        "404":
+          description: 리소스를 찾을 수 없음
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+              examples:
+                BOOK_NOT_FOUND:
+                  summary: BOOK_NOT_FOUND
+                  value:
+                    args:
+                      sample: value
+                    timestamp: 2025-11-11T10:00:00Z
+                    path: /delete
+                    code: BOOK_NOT_FOUND
+                    message: "도서를 찾을 수 없습니다. (id={id})"
+                    status: 404
+components:
+  schemas:
+    UpdateCategoriesRequest:
+      required:
+      - categoryIds
+      type: object
+      properties:
+        categoryIds:
+          minItems: 1
+          type: array
+          description: 도서에 적용할 카테고리 ID 리스트 (기존 카테고리를 새로 지정)
+          example:
+          - 1
+          - 2
+          - 5
+          items:
+            type: integer
+            description: 도서에 적용할 카테고리 ID 리스트 (기존 카테고리를 새로 지정)
+            format: int64
+    ChangeBookStatusRequest:
+      required:
+      - status
+      type: object
+      properties:
+        status:
+          type: string
+          description: 변경할 도서 상태
+          example: AVAILABLE
+          enum:
+          - AVAILABLE
+          - SUSPENDED_DAMAGED
+          - SUSPENDED_LOST
+          - AVAILABLE
+          - SUSPENDED_DAMAGED
+          - SUSPENDED_LOST
+    RentRequest:
+      required:
+      - bookId
+      - renterName
+      type: object
+      properties:
+        bookId:
+          type: integer
+          description: 대여할 도서 ID
+          format: int64
+          example: 1
+        renterName:
+          minLength: 1
+          type: string
+          description: 대여자 이름
+          example: 김민철
+    RentResponse:
+      type: object
+      properties:
+        rentalId:
+          type: integer
+          format: int64
+        bookId:
+          type: integer
+          format: int64
+        renterName:
+          type: string
+        status:
+          type: string
+          enum:
+          - RENTED
+          - RETURNED
+          - UNAVAILABLE
+        rentedAt:
+          type: string
+          format: date-time
+        returnedAt:
+          type: string
+          format: date-time
+    CreateCategoryRequest:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          minLength: 1
+          type: string
+          example: 문학
+    CategoryResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        bookCount:
+          type: integer
+          format: int64
+    CreateBookRequest:
+      required:
+      - author
+      - categoryIds
+      - title
+      type: object
+      properties:
+        title:
+          minLength: 1
+          type: string
+          description: 도서 제목
+          example: 객체지향의 사실과 오해
+        author:
+          minLength: 1
+          type: string
+          description: 도서 저자
+          example: 저자A
+        bookStatus:
+          type: string
+          description: "도서 상태 (기본값: AVAILABLE)"
+          example: AVAILABLE
+          enum:
+          - AVAILABLE
+          - SUSPENDED_DAMAGED
+          - SUSPENDED_LOST
+          - AVAILABLE
+          - SUSPENDED_DAMAGED
+          - SUSPENDED_LOST
+        stock:
+          minimum: 0
+          type: integer
+          description: 보유 재고 수량
+          format: int32
+          example: 10
+        categoryIds:
+          minItems: 1
+          type: array
+          description: 카테고리 ID 목록 (최소 1개)
+          example:
+          - 1
+          - 2
+          items:
+            type: integer
+            description: 카테고리 ID 목록 (최소 1개)
+            format: int64
+    BookResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        title:
+          type: string
+        author:
+          type: string
+        bookStatus:
+          type: string
+          enum:
+          - AVAILABLE
+          - SUSPENDED_DAMAGED
+          - SUSPENDED_LOST
+        stock:
+          type: integer
+          format: int32
+        categories:
+          type: array
+          items:
+            type: string
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          description: 에러 코드
+          example: BOOK_NOT_FOUND
+        message:
+          type: string
+          description: 에러 메시지
+          example: 존재하지 않는 도서입니다.
+        status:
+          type: integer
+          description: HTTP 상태 코드
+          format: int32
+          example: 404
+        path:
+          type: string
+          description: 요청 경로
+          example: /api/books/9999
+        timestamp:
+          type: string
+          description: 에러 발생 시각(UTC)
+          format: date-time
+          example: 2025-11-11T10:00:00Z
+        args:
+          type: object
+          additionalProperties:
+            type: object
+            description: 추가 정보
+            example:
+              bookId: 9999
+              field: id
+          description: 추가 정보
+          example:
+            bookId: 9999
+            field: id
+      description: 에러 응답
+  securitySchemes:
+    jwtAuth:
+      type: http
+      name: jwtAuth
+      scheme: bearer
+      bearerFormat: JWT

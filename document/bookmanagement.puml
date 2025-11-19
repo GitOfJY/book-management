@@ -1,0 +1,109 @@
+@startuml
+' === 스타일 ===
+skinparam classAttributeIconSize 0
+skinparam lint false
+hide circle
+hide empty methods
+
+package "domain" {
+
+  ' ----------------------------
+  ' Book
+  ' ----------------------------
+  class Book {
+    +id : Long
+    +author : String
+    +title : String
+    +bookStatus : BookStatus
+    +stock : int
+    +rentals : List<Rental>
+    +bookCategories : List<BookCategory>
+
+    {static} +createBook : Book
+    +increaseStock : void
+    +decreaseStock : void
+    +changeStatus : void
+    +addCategory : void
+    +hasCategory : boolean
+    +changeCategory : void
+  }
+
+  enum BookStatus {
+    AVAILABLE
+    DAMAGED
+    LOST
+    +isRentable() : boolean
+  }
+
+  ' ----------------------------
+  ' Category
+  ' ----------------------------
+  class Category {
+    +id : Long
+    +name : String
+    +bookCategories : List<BookCategory>
+  }
+
+  ' ----------------------------
+  ' BookCategory (연결 엔티티)
+  ' ----------------------------
+  class BookCategory {
+    +id: Long
+    +book: Book
+    +category: Category
+
+    +detach(): void
+  }
+
+  ' ----------------------------
+  ' Rental
+  ' ----------------------------
+  class Rental {
+    +id : Long
+    +book : Book
+    +renterName : String
+    +rentalStatus : RentalStatus
+    +rentedAt : LocalDateTime
+    +returnedAt : LocalDateTime
+
+    {static} +create : Rental
+    +returnBook(): void
+    +markUnavailable(): void
+  }
+
+  enum RentalStatus {
+    RENTED
+    RETURNED
+    UNAVAILABLE
+    +isActive() : boolean
+  }
+}
+
+' ============================
+' 연관관계
+' ============================
+Book "1" -- "0..*" Rental : rentals >
+Book "1" -- "0..*" BookCategory : maps >
+Category "1" -- "0..*" BookCategory : < maps
+
+' ============================
+' 비즈니스 규칙/메모
+' ============================
+note top of Book
+- stock은 0 이상이어야 함
+- createBook(): 제목/저자/카테고리/재고 유효성 검증
+- addCategory(): 중복 방지
+- changeCategory : 리스트로 받고 리스트로 수정
+end note
+
+note right of BookCategory
+- 생성자에서 양방향 컬렉션 동기화
+- detach(): 양방향 컬렉션에서 안전하게 해제
+end note
+
+note bottom of Rental
+- create(): RENTED, rentedAt=now(), dueDate=now()+2주
+- returnBook(): RENTED가 아니면 예외처리
+- markUnavailable(): UNAVAILABLE로 전환(훼손/분실)
+end note
+@enduml

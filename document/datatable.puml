@@ -1,0 +1,44 @@
+@startuml
+' === ERD: BOOK / CATEGORY / BOOK_CATEGORY / RENTAL ===
+hide circle
+skinparam classAttributeIconSize 0
+
+entity "book" as book {
+  * id : Long
+  --
+  title       : VARCHAR(120)
+  author      : VARCHAR(80)
+  book_status : VARCHAR(32)
+  stock       : INT
+}
+
+entity "category" as category {
+  * id : Long
+  --
+  name : VARCHAR(80)
+}
+
+entity "book_category" as bc {
+  * id          : Long
+  --
+  book_id      : Long
+  category_id  : Long
+}
+
+entity "rental" as rental {
+  * id : Long
+  --
+  book_id       : Long
+  renter_name   : VARCHAR(50)
+  rental_status : VARCHAR(32)
+  rented_date   : DATETIME
+  due_date      : DATETIME
+  returned_date : DATETIME
+}
+
+' === Relationships ===
+book ||--o{ bc      : "1:N (book_id)"
+category ||--o{ bc  : "1:N (category_id)"
+book ||--o{ rental  : "1:N (book_id)"
+
+@enduml
